@@ -60,7 +60,7 @@ angular.module('lk-google-picker', [])
       /**
        * Load required modules
        */
-      function instanciate() {
+      function instantiate() {
         gapi.load('auth', { 'callback': onApiAuthLoad });
         gapi.load('picker');
       }
@@ -115,18 +115,43 @@ angular.module('lk-google-picker', [])
       }
 
       /**
+       * Checks if file(s) picked are of accepted type.
+       */
+      var validType = function(data) {
+        if (!data.docs || !data.docs.length) {
+          return false;
+        }
+        for (var i = data.docs.length; i--; ) {
+          if (!(data.docs[i].mimeType === 'application/vnd.google-apps.document'
+            || data.docs[i].mimeType === 'application/vnd.google-apps.kix'
+            || data.docs[i].mimeType ===
+              'application/vnd.google-apps.presentation'
+            || data.docs[i].mimeType === 'application/pdf')) {
+            return false;
+          }
+        }
+        return true;
+      };
+
+      /**
        * Callback invoked when interacting with the Picker
        * data: Object returned by the API
        */
       function pickerResponse(data) {
         if (data.action == google.picker.Action.PICKED) {
-          gapi.client.load('drive', 'v2', function() {
-            angular.forEach(data.docs, function(file, index) {
-              scope.pickerFiles.push(file);
+          if (validType(data)) {
+            gapi.client.load('drive', 'v2', function() {
+              angular.forEach(data.docs, function(file, index) {
+                scope.pickerFiles.push(file);
+              });
+              scope.pickerCallback(null, scope.pickerFiles);
+              scope.$apply();
             });
-            scope.pickerCallback(scope.pickerFiles);
+          } else {
+            scope.pickerCallback(new Error('Invalid type for import.'));
             scope.$apply();
-          });
+          }
+
         }
       }
 
@@ -134,7 +159,7 @@ angular.module('lk-google-picker', [])
       gapi.load('picker');
 
       element.bind('click', function(e) {
-        instanciate();
+        instantiate();
       });
     }
   }
