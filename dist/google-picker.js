@@ -70,20 +70,29 @@ angular.module('lk-google-picker', [])
        * to get the proper accessToken [for the right files] every time.
        * borrowed from http://stackoverflow.com/a/13379472/1444541
        */
-      function onApiAuthLoad() {
-        gapi.auth.authorize({
+      function onApiAuthLoad(noImmediate) {
+        var settings = {
           'client_id' : lkGoogleSettings.clientId,
           'scope'     : lkGoogleSettings.scopes,
-          'immediate' : true,
           'user_id'   : attrs.googleId,
           'authuser'  : -1
-        }, handleAuthResult);
+        };
+        if(!noImmediate) {
+          settings.immediate = true;
+        }
+        gapi.auth.authorize(settings, handleAuthResult);
       }
 
       function handleAuthResult(result) {
         if (result && !result.error) {
           accessToken = result.access_token;
           openDialog();
+        }
+        else if(result.error === 'immediate_failed') {
+          onApiAuthLoad(true);
+        }
+        else {
+          console.error('handleAuthResult error', result);
         }
       }
 
@@ -97,6 +106,8 @@ angular.module('lk-google-picker', [])
                                .setOAuthToken(accessToken)
                                .setCallback(pickerResponse)
                                .setOrigin(lkGoogleSettings.origin);
+
+        console.log('initial picker is', picker);
 
         if (lkGoogleSettings.features.length > 0) {
           angular.forEach(lkGoogleSettings.features, function(feature, key) {
