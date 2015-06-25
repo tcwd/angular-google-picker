@@ -111,7 +111,11 @@ angular.module('lk-google-picker', [])
           });
         }
 
-        picker.build().setVisible(true);
+        var p = picker.build();
+        if(!p) {
+          console.error('Picker build failed', p);
+        }
+        p.setVisible(true);
       }
 
       /**
