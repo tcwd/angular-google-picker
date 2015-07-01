@@ -2,8 +2,7 @@ angular-google-picker
 =====================
 
 Angular directive that interact with the Google API Picker :
-* [https://developers.google.com/picker/docs/](https://developers.google.com/picker/)
-* [https://developers.google.com/picker/docs/](https://developers.google.com/picker/docs/)
+* [https://developers.google.com/picker](https://developers.google.com/picker/)
 
 **Requirements:** AngularJS 1.2+
 
@@ -12,22 +11,11 @@ Angular directive that interact with the Google API Picker :
 
 # Installation
 
-1. Using Bower (recommended)
+Using Bower (recommended)
 
   ```Bash
-  bower install angular-google-picker --save
+  bower install edwardysun/angular-google-picker#master --save
   ```
-
-2. Using NPM
-
-  ```bash
-  npm install angular-google-picker --save
-  ```
-
-3. Manually
-
-Download [https://github.com/softmonkeyjapan/angular-google-picker/archive/0.1.3.zip](https://github.com/softmonkeyjapan/angular-google-picker/archive/0.1.3.zip)
-
 
 # Usage
 
@@ -126,12 +114,12 @@ angular.module('myApp', ['lk-google-picker'])
 
 **Default** : `MULTISELECT_ENABLED` feature is use as default.
 
-Please refer to [https://developers.google.com/picker/docs/reference](https://developers.google.com/picker/docs/reference) for more informations.
+Please refer to [https://developers.google.com/picker/docs/reference](https://developers.google.com/picker/docs/reference) for more information.
 
 
 ### Views
 
-Views are objects that needs to be instanciate using the namespace `google.picker.*`. That namespace is already defined in the core of the directive. In order to add views to your picker, all you need to do is to define the class that needs to be used :
+Views are objects that needs to be instantiated using the namespace `google.picker.*`. That namespace is already defined in the core of the directive. In order to add views to your picker, all you need to do is to define the class that needs to be used :
 
 ```js
 angular.module('myApp', ['lk-google-picker'])
@@ -144,7 +132,7 @@ angular.module('myApp', ['lk-google-picker'])
 }])
 ```
 
-**NOTE** : Views classes have some usefull methods such as `setIncludeFolders` or `setStarred` (or any other methods available). In order to use them, just chain them to the class :
+**NOTE** : Views classes have some useful methods such as `setIncludeFolders` or `setStarred` (or any other methods available). In order to use them, just chain them to the class :
 
 ```js
 angular.module('myApp', ['lk-google-picker'])
@@ -159,7 +147,7 @@ angular.module('myApp', ['lk-google-picker'])
 
 **Default** : `DocsUploadView` and `DocsView` are use as default.
 
-Please refer to [https://developers.google.com/picker/docs/reference](https://developers.google.com/picker/docs/reference) for more informations.
+Please refer to [https://developers.google.com/picker/docs/reference](https://developers.google.com/picker/docs/reference) for more information.
 
 
 # Example
