@@ -72,11 +72,10 @@ angular.module('lk-google-picker', [])
        */
       function onApiAuthLoad() {
         gapi.auth.authorize({
-          'client_id' : lkGoogleSettings.clientId,
-          'scope'     : lkGoogleSettings.scopes,
-          'immediate' : true,
-          'user_id'   : attrs.googleId,
-          'authuser'  : -1
+          'client_id': lkGoogleSettings.clientId,
+          'scope': lkGoogleSettings.scopes,
+          'user_id': attrs.googleId,
+          'authuser': -1
         }, handleAuthResult);
       }
 
@@ -92,11 +91,10 @@ angular.module('lk-google-picker', [])
        */
       function openDialog() {
         var picker = new google.picker.PickerBuilder()
-                               .setLocale(lkGoogleSettings.locale)
-                               // .setDeveloperKey(lkGoogleSettings.apiKey)
-                               .setOAuthToken(accessToken)
-                               .setCallback(pickerResponse)
-                               .setOrigin(lkGoogleSettings.origin);
+          .setLocale(lkGoogleSettings.locale)
+          .setOAuthToken(accessToken)
+          .setCallback(pickerResponse)
+          .setOrigin(lkGoogleSettings.origin);
 
         if (lkGoogleSettings.features.length > 0) {
           angular.forEach(lkGoogleSettings.features, function(feature, key) {
