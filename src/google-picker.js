@@ -10,58 +10,65 @@
 
 angular.module('lk-google-picker', [])
 
-.provider('lkGoogleSettings', function() {
-  this.apiKey   = null;
+.provider('lkGoogleSettings', function () {
+  this.apiKey = null;
   this.clientId = null;
-  this.scopes   = ['https://www.googleapis.com/auth/drive'];
+  this.scopes = ['https://www.googleapis.com/auth/drive'];
   this.features = ['MULTISELECT_ENABLED'];
-  this.views    = [
+  this.views = [
     'DocsView().setIncludeFolders(true)',
     'DocsUploadView().setIncludeFolders(true)'
   ];
-  this.locale   = 'en'; // Default to English
+  this.locale = 'en';
+  this.validMimeTypes = [
+    'application/vnd.google-apps.document',
+    'application/vnd.google-apps.kix',
+    'application/vnd.google-apps.presentation',
+    'application/pdf'
+  ];
 
   /**
    * Provider factory $get method
    * Return Google Picker API settings
    */
-  this.$get = ['$window', function($window) {
+  this.$get = ['$window', function ($window) {
     return {
-      apiKey   : this.apiKey,
-      clientId : this.clientId,
-      scopes   : this.scopes,
-      features : this.features,
-      views    : this.views,
-      locale   : this.locale,
-      origin   : this.origin || $window.location.protocol + '//' + $window.location.host
+      apiKey: this.apiKey,
+      clientId: this.clientId,
+      scopes: this.scopes,
+      features: this.features,
+      views: this.views,
+      locale: this.locale,
+      origin: this.origin || $window.location.protocol + '//' + $window.location.host,
+      validMimeTypes: this.validMimeTypes
     }
   }];
 
   /**
    * Set the API config params using a hash
    */
-  this.configure = function(config) {
+  this.configure = function (config) {
     for (var key in config) {
       this[key] = config[key];
     }
   };
 })
 
-.directive('lkGooglePicker', ['lkGoogleSettings', function(lkGoogleSettings) {
+.directive('lkGooglePicker', ['lkGoogleSettings', function (lkGoogleSettings) {
   return {
     restrict: 'A',
     scope: {
       pickerFiles: '=',
       pickerCallback: '='
     },
-    link: function(scope, element, attrs) {
+    link: function (scope, element, attrs) {
       var accessToken = null;
 
       /**
        * Load required modules
        */
       function instantiate() {
-        gapi.load('auth', { 'callback': onApiAuthLoad });
+        gapi.load('auth', {'callback': onApiAuthLoad});
         gapi.load('picker');
       }
 
@@ -109,13 +116,13 @@ angular.module('lk-google-picker', [])
                                .setOrigin(lkGoogleSettings.origin);
 
         if (lkGoogleSettings.features.length > 0) {
-          angular.forEach(lkGoogleSettings.features, function(feature, key) {
+          angular.forEach(lkGoogleSettings.features, function (feature, key) {
             picker.enableFeature(google.picker.Feature[feature]);
           });
         }
 
         if (lkGoogleSettings.views.length > 0) {
-          angular.forEach(lkGoogleSettings.views, function(view, key) {
+          angular.forEach(lkGoogleSettings.views, function (view, key) {
             view = eval('new google.picker.' + view);
             picker.addView(view);
           });
@@ -131,20 +138,13 @@ angular.module('lk-google-picker', [])
       /**
        * Checks if file(s) picked are of accepted type.
        */
-      var validType = function(data) {
+      var validType = function (data) {
         if (!data.docs || !data.docs.length) {
           return false;
         }
-        for (var i = data.docs.length; i--; ) {
-          if (!(data.docs[i].mimeType === 'application/vnd.google-apps.document'
-            || data.docs[i].mimeType === 'application/vnd.google-apps.kix'
-            || data.docs[i].mimeType ===
-              'application/vnd.google-apps.presentation'
-            || data.docs[i].mimeType === 'application/pdf')) {
-            return false;
-          }
-        }
-        return true;
+        return data.docs.every(function (doc) {
+          return lkGoogleSettings.validMimeTypes.indexOf(doc.mimeType) >= 0;
+        });
       };
 
       /**
@@ -154,8 +154,8 @@ angular.module('lk-google-picker', [])
       function pickerResponse(data) {
         if (data.action == google.picker.Action.PICKED) {
           if (validType(data)) {
-            gapi.client.load('drive', 'v2', function() {
-              angular.forEach(data.docs, function(file, index) {
+            gapi.client.load('drive', 'v2', function () {
+              angular.forEach(data.docs, function (file, index) {
                 scope.pickerFiles.push(file);
               });
               scope.pickerCallback(null, scope.pickerFiles);
@@ -165,14 +165,13 @@ angular.module('lk-google-picker', [])
             scope.pickerCallback(new Error('Invalid type for import.'));
             scope.$apply();
           }
-
         }
       }
 
       gapi.load('auth');
       gapi.load('picker');
 
-      element.bind('click', function(e) {
+      element.bind('click', function (e) {
         instantiate();
       });
     }
