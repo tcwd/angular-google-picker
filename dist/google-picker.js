@@ -70,25 +70,27 @@ angular.module('lk-google-picker', [])
        * to get the proper accessToken [for the right files] every time.
        * borrowed from http://stackoverflow.com/a/13379472/1444541
        */
-      function onApiAuthLoad(noImmediate) {
+      function onApiAuthLoad (noImmediate) {
         var settings = {
           'client_id' : lkGoogleSettings.clientId,
           'scope'     : lkGoogleSettings.scopes,
           'user_id'   : attrs.googleId,
           'authuser'  : -1
         };
-        if(!noImmediate) {
+
+        if (!noImmediate) {
           settings.immediate = true;
         }
+
         gapi.auth.authorize(settings, handleAuthResult);
       }
 
-      function handleAuthResult(result) {
+      function handleAuthResult (result) {
         if (result && !result.error) {
           accessToken = result.access_token;
           openDialog();
         }
-        else if(result.error === 'immediate_failed') {
+        else if (result.error === 'immediate_failed') {
           onApiAuthLoad(true);
         }
         else {
@@ -99,15 +101,12 @@ angular.module('lk-google-picker', [])
       /**
        * Everything is good, open the files picker
        */
-      function openDialog() {
+      function openDialog () {
         var picker = new google.picker.PickerBuilder()
                                .setLocale(lkGoogleSettings.locale)
-                               // .setDeveloperKey(lkGoogleSettings.apiKey)
                                .setOAuthToken(accessToken)
                                .setCallback(pickerResponse)
                                .setOrigin(lkGoogleSettings.origin);
-
-        console.log('initial picker is', picker);
 
         if (lkGoogleSettings.features.length > 0) {
           angular.forEach(lkGoogleSettings.features, function(feature, key) {
@@ -122,11 +121,11 @@ angular.module('lk-google-picker', [])
           });
         }
 
-        var p = picker.build();
-        if(!p) {
-          console.error('Picker build failed', p);
+        var builtPicker = picker.build();
+        if (!builtPicker) {
+          console.error('build picker failed', builtPicker);
         }
-        p.setVisible(true);
+        builtPicker.setVisible(true);
       }
 
       /**
