@@ -61,7 +61,7 @@ angular.module('lk-google-picker', [])
        * Load required modules
        */
       function instantiate() {
-        gapi.load('auth', { 'callback': onApiAuthLoad });
+        gapi.load('auth', {'callback': onApiAuthLoad});
         gapi.load('picker');
       }
 
@@ -70,19 +70,26 @@ angular.module('lk-google-picker', [])
        * to get the proper accessToken [for the right files] every time.
        * borrowed from http://stackoverflow.com/a/13379472/1444541
        */
-      function onApiAuthLoad() {
+      function onApiAuthLoad (immediate) {
         gapi.auth.authorize({
           'client_id': lkGoogleSettings.clientId,
           'scope': lkGoogleSettings.scopes,
+          'immediate': !!immediate,
           'user_id': attrs.googleId,
           'authuser': -1
         }, handleAuthResult);
       }
 
-      function handleAuthResult(result) {
+      function handleAuthResult (result) {
         if (result && !result.error) {
           accessToken = result.access_token;
           openDialog();
+        }
+        else if (result.error === 'immediate_failed') {
+          onApiAuthLoad(false);
+        }
+        else {
+          console.error('handleAuthResult failed', result);
         }
       }
 
@@ -109,7 +116,13 @@ angular.module('lk-google-picker', [])
           });
         }
 
-        picker.build().setVisible(true);
+        var builtPicker = picker.build();
+        if (!builtPicker) {
+          console.error('Picker failed to build', builtPicker);
+        }
+        else {
+          builtPicker.setVisible(true);
+        }
       }
 
       /**
