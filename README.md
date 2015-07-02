@@ -9,15 +9,32 @@ Angular directive that interact with the Google API Picker :
 **File Size:** 1.67Kb minified
 
 
-# Installation
+## Installation
 
 Using Bower (recommended)
 
-  ```Bash
-  bower install edwardysun/angular-google-picker#master --save
-  ```
+```bash
+$ bower install edwardysun/angular-google-picker#<version> --save
+```
 
-# Usage
+where `version` is the branch name you want (e.g. `master`) or the commit SHA.
+
+## Build
+
+```bash
+$ gulp
+$ git commit -am "Build <summary>" -m "<optional extended summary>"
+```
+
+## Test
+
+Tests are part of the build process, but if you want to run them separately, simply:
+
+```bash
+$ gulp test
+```
+
+## Usage
 
 1. Include Google client and api script in your layout
 
@@ -38,10 +55,9 @@ Using Bower (recommended)
 
   ```js
   angular.module('myApp', ['lk-google-picker'])
-
-  .controller('ExamplaCtrl', ['$scope', function($scope) {
-     $scope.files = [];
-  }]);
+    .controller('ExampleCtrl', ['$scope', function($scope) {
+      $scope.files = [];
+    }]);
   ```
 
 5. Add the directive to your HTML element
@@ -52,32 +68,30 @@ Using Bower (recommended)
 
 6. That's it, you're done!
 
-
 You'll notice here the usage of `picker-files`. You need to pass here a scope that gonna receive the selected files. Once selected, the plugin gonna push files into it. A file is a json object that looks like :
 
-  ```json
-  [
-    {
-      "id": "0B50DHrsuMky6UFlSQloxYGBxT2M",
-      "serviceId": "docs",
-      "mimeType": "image/jpeg",
-      "name": "DSC01845.JPG",
-      "type": "photo",
-      "lastEditedUtc": 1409023514905,
-      "iconUrl": "https://ssl.gstatic.com/docs/doclist/images/icon_11_image_list.png",
-      "description": "",
-      "url": "https://docs.google.com/file/d/0B50DHrsuMky6UFlSQloxYGBxT2M/edit?usp=drive_web",
-      "sizeBytes": 1570863,
-      "parentId": "0B50DHrsuMkx6cWhrSXpTR1cyYW8"
-    },
-    {
-      ...
-    }
-  ]
-  ```
+```json
+[
+  {
+    "id": "0B50DHrsuMky6UFlSQloxYGBxT2M",
+    "serviceId": "docs",
+    "mimeType": "image/jpeg",
+    "name": "DSC01845.JPG",
+    "type": "photo",
+    "lastEditedUtc": 1409023514905,
+    "iconUrl": "https://ssl.gstatic.com/docs/doclist/images/icon_11_image_list.png",
+    "description": "",
+    "url": "https://docs.google.com/file/d/0B50DHrsuMky6UFlSQloxYGBxT2M/edit?usp=drive_web",
+    "sizeBytes": 1570863,
+    "parentId": "0B50DHrsuMkx6cWhrSXpTR1cyYW8"
+  },
+  {
+    ...
+  }
+]
+```
 
-
-# Configuration
+## Configuration
 
 In order to work, Google Picker needs to connect to the Google API using an application credentials (Api Key and client ID). For more information on how to create an application/project, please refer to [https://developers.google.com/drive/web/](https://developers.google.com/drive/web/). To do so, you'll need to configure the service.
 
@@ -86,18 +100,16 @@ In order to work, Google Picker needs to connect to the Google API using an appl
 
 ```js
 angular.module('myApp', ['lk-google-picker'])
-
-.config(['lkGoogleSettingsProvider', function(lkGoogleSettingsProvider) {
-
-  lkGoogleSettingsProvider.configure({
-    apiKey   : 'YOUR_API_KEY',
-    clientId : 'YOUR_CLIENT_ID',
-    scopes   : ['https://www.googleapis.com/auth/drive', 'another_scope', 'and_another'],
-    locale   : 'ja',
-    features : ['..', '..'],
-    views    : ['..', '..']
-  });
-}])
+  .config(['lkGoogleSettingsProvider', function(lkGoogleSettingsProvider) {
+    lkGoogleSettingsProvider.configure({
+      apiKey   : 'YOUR_API_KEY',
+      clientId : 'YOUR_CLIENT_ID',
+      scopes   : ['https://www.googleapis.com/auth/drive', 'another_scope', 'and_another'],
+      locale   : 'ja',
+      features : ['..', '..'],
+      views    : ['..', '..']
+    });
+  }])
 ```
 
 ### Features
@@ -106,16 +118,14 @@ The Picker use the concept of views and features that allow you to customize it.
 
 ```js
 angular.module('myApp', ['lk-google-picker'])
-
-.config(['lkGoogleSettingsProvider', function(lkGoogleSettingsProvider) {
-  lkGoogleSettingsProvider.features(['MULTISELECT_ENABLED', 'ANOTHER_ONE']);
-}])
+  .config(['lkGoogleSettingsProvider', function(lkGoogleSettingsProvider) {
+    lkGoogleSettingsProvider.features(['MULTISELECT_ENABLED', 'ANOTHER_ONE']);
+  }])
 ```
 
 **Default** : `MULTISELECT_ENABLED` feature is use as default.
 
 Please refer to [https://developers.google.com/picker/docs/reference](https://developers.google.com/picker/docs/reference) for more information.
-
 
 ### Views
 
@@ -123,32 +133,29 @@ Views are objects that needs to be instantiated using the namespace `google.pick
 
 ```js
 angular.module('myApp', ['lk-google-picker'])
-
-.config(['lkGoogleSettingsProvider', function(lkGoogleSettingsProvider) {
-  lkGoogleSettingsProvider.views([
-    'DocsUploadView()',
-    'DocsView()'
-  ]);
-}])
+  .config(['lkGoogleSettingsProvider', function(lkGoogleSettingsProvider) {
+    lkGoogleSettingsProvider.views([
+      'DocsUploadView()',
+      'DocsView()'
+    ]);
+  }])
 ```
 
 **NOTE** : Views classes have some useful methods such as `setIncludeFolders` or `setStarred` (or any other methods available). In order to use them, just chain them to the class :
 
 ```js
 angular.module('myApp', ['lk-google-picker'])
-
-.config(['lkGoogleSettingsProvider', function(lkGoogleSettingsProvider) {
-  lkGoogleSettingsProvider.setViews([
-    'DocsUploadView().setIncludeFolders(true)',
-    'DocsView().setStarred(true)'
-  ]);
-}])
+  .config(['lkGoogleSettingsProvider', function(lkGoogleSettingsProvider) {
+    lkGoogleSettingsProvider.setViews([
+      'DocsUploadView().setIncludeFolders(true)',
+      'DocsView().setStarred(true)'
+    ]);
+  }])
 ```
 
 **Default** : `DocsUploadView` and `DocsView` are use as default.
 
 Please refer to [https://developers.google.com/picker/docs/reference](https://developers.google.com/picker/docs/reference) for more information.
-
 
 # Example
 
@@ -163,11 +170,9 @@ Serving HTTP on 0.0.0.0 port 8000 ...
 
 You should now be able to browse to `localhost:8000` and see it in action from your localhost.
 
-
 # Demo
 
 A demo version is available at [http://softmonkeyjapan.github.io/angular-google-picker/](http://softmonkeyjapan.github.io/angular-google-picker/).
-
 
 # License
 Licensed under the MIT license

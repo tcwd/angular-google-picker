@@ -4,7 +4,7 @@
   "authors": [
     "Loic Kartono <contact@kartono-loic.com>"
   ],
-  "description": "An AngularJs directive that interact with the Google Picker API",
+  "description": "An AngularJS directive that interfaces with the Google Picker API",
   "main": "dist/google-picker.js",
   "keywords": [
     "Angular",
@@ -13,7 +13,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git://github.com/softmonkeyjapan/angular-google-picker.git"
+    "url": "git://github.com/edwardysun/angular-google-picker.git"
   },
   "license": "MIT",
   "homepage": "https://github.com/softmonkeyjapan/angular-google-picker",
