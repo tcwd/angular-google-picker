@@ -12,7 +12,7 @@ angular.module('lk-google-picker', [])
   .provider('lkGoogleSettings', function () {
     this.apiKey = null;
     this.clientId = null;
-    this.scopes = ['https://www.googleapis.com/auth/drive'];
+    this.scopes = ['https://www.googleapis.com/auth/drive.readonly'];
     this.features = ['MULTISELECT_ENABLED'];
     this.views = [
       'DocsView().setIncludeFolders(true)',
